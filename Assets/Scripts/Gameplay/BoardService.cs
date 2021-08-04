@@ -12,7 +12,9 @@ namespace Gameplay
 
         public Figure[,] FiguresPosition { get; private set; } = new Figure[8,8];
         public void SetStartFigurePosition(Vector2 position, Figure figure) => FiguresPosition[(int)position.x, (int)position.y] = figure;
-        
+
+        public Figure ActiveFigure { get; private set; }
+
         public BoardService()
         {
             for (int i = 0; i < Rows; ++i)
@@ -23,7 +25,18 @@ namespace Gameplay
                 }
             }
         }
-        
+
+        public void SetActiveFigure(Figure figure)
+        {
+            if (ActiveFigure)
+                ActiveFigure.GetComponent<Outline>().enabled = false;
+
+            ActiveFigure = figure;
+            Outline newFigureOutline = ActiveFigure.GetComponent<Outline>();
+            newFigureOutline.enabled = true;
+            newFigureOutline.OutlineColor = UnityEngine.Color.green;
+        }
+
 
         private FigureMeta GetStartFigureMetaByPosition(int x, int y)
         {

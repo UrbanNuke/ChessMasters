@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 693797306760207099}
   - component: {fileID: 1481961319444108141}
   - component: {fileID: 2438157271654151050}
+  - component: {fileID: -3730010190610825086}
+  - component: {fileID: 6183768684133007338}
   m_Layer: 0
   m_Name: I_Bishop
   m_TagString: Untagged
@@ -94,4 +96,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 419b85cdec4e5484f84f9de0b97f4106, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 3
+--- !u!64 &-3730010190610825086
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7489821008014120413}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 1093284033137061527, guid: 2ff80e792dbbab74189b9c5282d69f83, type: 3}
+--- !u!114 &6183768684133007338
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7489821008014120413}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 1
+  outlineColor: {r: 0.043334484, g: 0, b: 1, a: 1}
+  outlineWidth: 3
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []

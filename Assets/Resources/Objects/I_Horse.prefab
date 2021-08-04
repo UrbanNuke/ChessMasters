@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 3550284871728479064}
   - component: {fileID: 3203469223725953742}
   - component: {fileID: 2196569709624351005}
+  - component: {fileID: 5633348955806898677}
+  - component: {fileID: -1483318147001848115}
   m_Layer: 0
   m_Name: I_Horse
   m_TagString: Untagged
@@ -94,4 +96,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 419b85cdec4e5484f84f9de0b97f4106, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 2
+--- !u!64 &5633348955806898677
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6851322177853174910}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4236766822600326646, guid: 2ff80e792dbbab74189b9c5282d69f83, type: 3}
+--- !u!114 &-1483318147001848115
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6851322177853174910}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 1
+  outlineColor: {r: 0.043334484, g: 0, b: 1, a: 1}
+  outlineWidth: 3
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []

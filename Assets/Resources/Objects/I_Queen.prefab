@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 3234859329875284513}
   - component: {fileID: 3590671160592194487}
   - component: {fileID: 1863794561092028008}
+  - component: {fileID: 8857797694734160371}
+  - component: {fileID: 8968941370596154073}
   m_Layer: 0
   m_Name: I_Queen
   m_TagString: Untagged
@@ -94,4 +96,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 419b85cdec4e5484f84f9de0b97f4106, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 4
+--- !u!64 &8857797694734160371
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4806865914118216967}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -6819425536786765585, guid: 2ff80e792dbbab74189b9c5282d69f83, type: 3}
+--- !u!114 &8968941370596154073
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4806865914118216967}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 1
+  outlineColor: {r: 0.043334484, g: 0, b: 1, a: 1}
+  outlineWidth: 3
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []

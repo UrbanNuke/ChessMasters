@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 1454568907446278910}
   - component: {fileID: 657399893818381160}
   - component: {fileID: 2643466004819691974}
+  - component: {fileID: 1543706751791426938}
+  - component: {fileID: -1701322005511944293}
   m_Layer: 0
   m_Name: I_Pawn
   m_TagString: Untagged
@@ -94,3 +96,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 419b85cdec4e5484f84f9de0b97f4106, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!64 &1543706751791426938
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8826570151744361944}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 6796500586879449491, guid: 2ff80e792dbbab74189b9c5282d69f83, type: 3}
+--- !u!114 &-1701322005511944293
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8826570151744361944}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 1
+  outlineColor: {r: 0.043334484, g: 0, b: 1, a: 1}
+  outlineWidth: 3
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
