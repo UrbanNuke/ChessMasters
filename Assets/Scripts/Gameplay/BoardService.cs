@@ -1,17 +1,22 @@
-﻿using Misc;
+﻿using System;
+using Misc;
 using UnityEngine;
 
 namespace Gameplay
 {
     public class BoardService
     {
-        public FigureMeta[,] StartFigureData { get; private set; } = new FigureMeta[8,8];
+        public event Action<Figure> OnFigureSelected;
+        
         public const int Rows = 8;
         public const int Columns = 8;
         public const float FieldOffset = 0.5f;
+        public const int Border = 7;
+        
+        public FigureMeta[,] StartFigureData { get; private set; } = new FigureMeta[8,8];
 
         public Figure[,] FiguresPosition { get; private set; } = new Figure[8,8];
-        public void SetStartFigurePosition(Vector2 position, Figure figure) => FiguresPosition[(int)position.x, (int)position.y] = figure;
+        public void SetStartFigurePosition(Vector2Int position, Figure figure) => FiguresPosition[position.x, position.y] = figure;
 
         public Figure ActiveFigure { get; private set; }
 
@@ -35,12 +40,11 @@ namespace Gameplay
             Outline newFigureOutline = ActiveFigure.GetComponent<Outline>();
             newFigureOutline.enabled = true;
             newFigureOutline.OutlineColor = UnityEngine.Color.green;
+            OnFigureSelected?.Invoke(ActiveFigure);
         }
-
-
+        
         private FigureMeta GetStartFigureMetaByPosition(int x, int y)
         {
-
             switch (y)
             {
                 case 1:

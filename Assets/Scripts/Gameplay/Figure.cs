@@ -12,8 +12,8 @@ namespace Gameplay
         public FigureColor Color { get; private set; }
         public void SetColor(FigureColor color) => Color = color;
         
-        public Vector2 Position { get; private set; }
-        public void SetPosition(Vector2 position) => Position = position;
+        public Vector2Int Position { get; private set; }
+        public void SetPosition(Vector2Int position) => Position = position;
 
         private BoardService _boardService;
         private Outline _outline;

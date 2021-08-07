@@ -38,7 +38,7 @@ namespace Gameplay
                     _figureFactory.Create(
                         figureMeta.type,
                         figureMeta.color,
-                        new Vector2(j, i),
+                        new Vector2Int(j, i),
                         new Vector3(j * BoardService.FieldOffset, 0.5f, i * BoardService.FieldOffset),
                         rotation,
                         figuresContainer
