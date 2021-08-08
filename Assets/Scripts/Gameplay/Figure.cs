@@ -12,8 +12,8 @@ namespace Gameplay
         public FigureColor Color { get; private set; }
         public void SetColor(FigureColor color) => Color = color;
         
-        public Vector2Int Position { get; private set; }
-        public void SetPosition(Vector2Int position) => Position = position;
+        public BoardPosition Position { get; private set; }
+        public void SetPosition(BoardPosition position) => Position = position;
 
         private BoardService _boardService;
         private Outline _outline;
@@ -51,6 +51,15 @@ namespace Gameplay
         {
             if (this == _boardService.ActiveFigure) return;
             _boardService.SetActiveFigure(this);
+        }
+
+        public void Move(Vector3 newPosition)
+        {
+            _boardService.FiguresPosition[Position.y, Position.x] = null;
+            Position = BoardPosition.FromBoardCoord(newPosition);
+            _boardService.FiguresPosition[Position.y, Position.x] = this;
+            transform.position = newPosition;
+            _boardService.SetActiveFigure(null);
         }
     }
 }

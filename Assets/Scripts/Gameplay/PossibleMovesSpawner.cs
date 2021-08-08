@@ -33,8 +33,11 @@ namespace Gameplay
             {
                 Destroy(move.gameObject);
             }
+            
+            if (figure == null) 
+                return;
 
-            foreach (Vector3 move in _possibleMovesService.Get(_boardService.ActiveFigure))
+            foreach (Vector3 move in _possibleMovesService.Get(figure))
             {
                 _possibleMovesFactory.Create(move, Quaternion.identity, possibleMovesContainer);
             }

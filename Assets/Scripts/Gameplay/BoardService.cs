@@ -16,7 +16,7 @@ namespace Gameplay
         public FigureMeta[,] StartFigureData { get; private set; } = new FigureMeta[8,8];
 
         public Figure[,] FiguresPosition { get; private set; } = new Figure[8,8];
-        public void SetStartFigurePosition(Vector2Int position, Figure figure) => FiguresPosition[position.x, position.y] = figure;
+        public void SetStartFigurePosition(BoardPosition position, Figure figure) => FiguresPosition[position.y, position.x] = figure;
 
         public Figure ActiveFigure { get; private set; }
 
@@ -37,9 +37,12 @@ namespace Gameplay
                 ActiveFigure.GetComponent<Outline>().enabled = false;
 
             ActiveFigure = figure;
-            Outline newFigureOutline = ActiveFigure.GetComponent<Outline>();
-            newFigureOutline.enabled = true;
-            newFigureOutline.OutlineColor = UnityEngine.Color.green;
+            if (ActiveFigure != null)
+            {
+                Outline newFigureOutline = ActiveFigure.GetComponent<Outline>();
+                newFigureOutline.enabled = true;
+                newFigureOutline.OutlineColor = UnityEngine.Color.green;
+            }
             OnFigureSelected?.Invoke(ActiveFigure);
         }
         

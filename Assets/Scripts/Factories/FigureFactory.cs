@@ -31,7 +31,7 @@ namespace Factories
             _kingFigure = Resources.Load("Objects/I_King");
         }
 
-        public void Create(FigureType type, FigureColor color, Vector2Int position, Vector3 at, Quaternion rotation, Transform parent)
+        public void Create(FigureType type, FigureColor color, BoardPosition position, Vector3 at, Quaternion rotation, Transform parent)
         {
             GameObject instantiatePrefab = type switch
             {
