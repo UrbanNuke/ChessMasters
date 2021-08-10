@@ -581,6 +581,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d87a483562e42c78b35c2630a15990b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  beatenFiguresPrefab: {fileID: 4486554941901090391, guid: 5456aee0e39c8024bb421894161ec60a, type: 3}
 --- !u!1 &1952731782
 GameObject:
   m_ObjectHideFlags: 0

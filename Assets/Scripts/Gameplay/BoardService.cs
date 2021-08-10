@@ -1,11 +1,11 @@
 ﻿using System;
 using Misc;
-using UnityEngine;
 
 namespace Gameplay
 {
     public class BoardService
     {
+        private readonly BeatenFigures _beatenFigures;
         public event Action<Figure> OnFigureSelected;
         
         public const int Rows = 8;
@@ -21,8 +21,11 @@ namespace Gameplay
         public Figure ActiveFigure { get; private set; }
         public bool IsFigureMoving { get; set; }
 
-        public BoardService()
+        public FigureColor ActivePlayer { get; private set; } = FigureColor.White;
+
+        public BoardService(BeatenFigures beatenFigures)
         {
+            _beatenFigures = beatenFigures;
             for (int i = 0; i < Rows; ++i)
             {
                 for (int j = 0; j < Columns; ++j)
@@ -46,7 +49,19 @@ namespace Gameplay
             }
             OnFigureSelected?.Invoke(ActiveFigure);
         }
-        
+
+        public void EndFigureMove()
+        {
+            IsFigureMoving = false;
+            ActivePlayer = ActivePlayer == FigureColor.White ? FigureColor.Black : FigureColor.White;
+        }
+
+        public void BeatFigure(Figure beatenFigure)
+        {
+            beatenFigure.WasBeaten = true;
+            _beatenFigures.PutBeatenFigure(beatenFigure);
+        }
+
         private FigureMeta GetStartFigureMetaByPosition(int x, int y)
         {
             switch (y)

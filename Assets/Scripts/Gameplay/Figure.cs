@@ -16,6 +16,8 @@ namespace Gameplay
         public BoardPosition Position { get; private set; }
         public void SetPosition(BoardPosition position) => Position = position;
 
+        public bool WasBeaten { get; set; }
+
         private BoardService _boardService;
         private Outline _outline;
 
@@ -37,28 +39,39 @@ namespace Gameplay
 
         private void OnMouseEnter()
         {
-            if (this == _boardService.ActiveFigure || _boardService.IsFigureMoving) return;
+            if (!CanChooseOrHoverFigure()) return;
             _outline.enabled = true;
             _outline.OutlineColor = UnityEngine.Color.blue;
         }
 
         private void OnMouseExit()
         {
-            if (this == _boardService.ActiveFigure || _boardService.IsFigureMoving) return;
+            if (!CanChooseOrHoverFigure()) return;
             _outline.enabled = false;
         }
 
         private void OnMouseUp()
         {
-            if (this == _boardService.ActiveFigure || _boardService.IsFigureMoving) return;
+            if (!CanChooseOrHoverFigure()) return;
             _boardService.SetActiveFigure(this);
+        }
+        
+        private bool CanChooseOrHoverFigure()
+        {
+            return this != _boardService.ActiveFigure && !_boardService.IsFigureMoving && Color == _boardService.ActivePlayer && !WasBeaten;
         }
 
         public void Move(Vector3 newPosition)
         {
             _boardService.FiguresPosition[Position.y, Position.x] = null;
             Position = BoardPosition.FromBoardCoord(newPosition);
+            Figure figureOnNewPosition = _boardService.FiguresPosition[Position.y, Position.x];
+            if (figureOnNewPosition != null)
+            {
+                _boardService.BeatFigure(figureOnNewPosition);
+            }
             _boardService.FiguresPosition[Position.y, Position.x] = this;
+            
             _boardService.SetActiveFigure(null);
             _boardService.IsFigureMoving = true;
             StartCoroutine(MoveFigure(newPosition));
@@ -81,8 +94,8 @@ namespace Gameplay
                 t += Time.deltaTime;
                 yield return null;
             }
-
-            _boardService.IsFigureMoving = false;
+            
+            _boardService.EndFigureMove();
         }
     }
 }

@@ -1,23 +1,35 @@
 ﻿using Factories;
 using Gameplay;
 using Misc;
+using UnityEngine;
 using Zenject;
 
 namespace Infrastructure
 {
     public class MainInstaller : MonoInstaller
     {
+        public GameObject beatenFiguresPrefab;
+        
         public override void InstallBindings()
         {
             BindFigureFactory();
             BindPossibleMovesFactory();
             BindBoardService();
             BindPossibleMovesService();
+            BindBeatenFigures();
         }
 
-        private IfNotBoundBinder BindPossibleMovesService()
+        private void BindBeatenFigures()
         {
-            return Container
+            Container
+                .Bind<BeatenFigures>()
+                .FromComponentInNewPrefab(beatenFiguresPrefab)
+                .AsSingle();
+        }
+
+        private void BindPossibleMovesService()
+        {
+            Container
                 .Bind<PossibleMovesService>()
                 .AsSingle()
                 .NonLazy();
