@@ -19,6 +19,7 @@ namespace Gameplay
         public void SetStartFigurePosition(BoardPosition position, Figure figure) => FiguresPosition[position.y, position.x] = figure;
 
         public Figure ActiveFigure { get; private set; }
+        public bool IsFigureMoving { get; set; }
 
         public BoardService()
         {

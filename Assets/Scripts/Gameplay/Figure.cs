@@ -1,3 +1,4 @@
+using System.Collections;
 using Misc;
 using UnityEngine;
 using Zenject;
@@ -36,20 +37,20 @@ namespace Gameplay
 
         private void OnMouseEnter()
         {
-            if (this == _boardService.ActiveFigure) return;
+            if (this == _boardService.ActiveFigure || _boardService.IsFigureMoving) return;
             _outline.enabled = true;
             _outline.OutlineColor = UnityEngine.Color.blue;
         }
 
         private void OnMouseExit()
         {
-            if (this == _boardService.ActiveFigure) return;
+            if (this == _boardService.ActiveFigure || _boardService.IsFigureMoving) return;
             _outline.enabled = false;
         }
 
         private void OnMouseUp()
         {
-            if (this == _boardService.ActiveFigure) return;
+            if (this == _boardService.ActiveFigure || _boardService.IsFigureMoving) return;
             _boardService.SetActiveFigure(this);
         }
 
@@ -58,8 +59,30 @@ namespace Gameplay
             _boardService.FiguresPosition[Position.y, Position.x] = null;
             Position = BoardPosition.FromBoardCoord(newPosition);
             _boardService.FiguresPosition[Position.y, Position.x] = this;
-            transform.position = newPosition;
             _boardService.SetActiveFigure(null);
+            _boardService.IsFigureMoving = true;
+            StartCoroutine(MoveFigure(newPosition));
+        }
+
+        private IEnumerator MoveFigure(Vector3 newPosition)
+        {
+            float t = 0f;
+            Vector3 distance = newPosition - transform.position;
+            Vector3 firstBezierPoint = transform.position;
+            Vector3 secondBezierPoint = transform.position + distance / 4;
+            secondBezierPoint.y = 1.5f;
+            Vector3 thirdBezierPoint = newPosition;
+
+            while (t < 1f)
+            {
+                Vector3 a = Vector3.Lerp(firstBezierPoint, secondBezierPoint, t);
+                Vector3 b = Vector3.Lerp(secondBezierPoint, thirdBezierPoint, t);
+                transform.position = Vector3.Lerp(a, b, t);
+                t += Time.deltaTime;
+                yield return null;
+            }
+
+            _boardService.IsFigureMoving = false;
         }
     }
 }
