@@ -16,6 +16,7 @@ namespace Gameplay
         public BoardPosition Position { get; private set; }
         public void SetPosition(BoardPosition position) => Position = position;
 
+        public bool CanBeBeaten { get; set; }
         public bool WasBeaten { get; set; }
 
         private BoardService _boardService;
@@ -30,8 +31,7 @@ namespace Gameplay
 
         private void Start()
         {
-            Material mat = Resources
-                .Load(Color == FigureColor.White ? "Materials/M_White" : "Materials/M_Black") as Material;
+            Material mat = Resources.Load(Color == FigureColor.White ? "Materials/M_White" : "Materials/M_Black") as Material;
             GetComponent<MeshRenderer>().material = mat;
             
             _boardService.SetStartFigurePosition(Position, this);
@@ -52,13 +52,14 @@ namespace Gameplay
 
         private void OnMouseUp()
         {
+            if (CanBeBeaten)
+            {
+                _boardService.ActiveFigure.Move(transform.position);
+                return;
+            }
+            
             if (!CanChooseOrHoverFigure()) return;
             _boardService.SetActiveFigure(this);
-        }
-        
-        private bool CanChooseOrHoverFigure()
-        {
-            return this != _boardService.ActiveFigure && !_boardService.IsFigureMoving && Color == _boardService.ActivePlayer && !WasBeaten;
         }
 
         public void Move(Vector3 newPosition)
@@ -75,6 +76,13 @@ namespace Gameplay
             _boardService.SetActiveFigure(null);
             _boardService.IsFigureMoving = true;
             StartCoroutine(MoveFigure(newPosition));
+        }
+
+        public void ChangeMaterial(Material material) => GetComponent<MeshRenderer>().material = material;
+
+        private bool CanChooseOrHoverFigure()
+        {
+            return this != _boardService.ActiveFigure && !_boardService.IsFigureMoving && Color == _boardService.ActivePlayer && !WasBeaten;
         }
 
         private IEnumerator MoveFigure(Vector3 newPosition)

@@ -23,6 +23,7 @@ namespace Gameplay
             _boardService = boardService;
             _possibleMovesService = possibleMovesService;
             _possibleMovesFactory = possibleMovesFactory;
+            
             _possibleMovesFactory.Load();
             _boardService.OnFigureSelected += SpawnPossibleMoves;
         }

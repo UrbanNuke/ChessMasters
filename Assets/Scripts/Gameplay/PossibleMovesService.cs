@@ -1,16 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Gameplay;
+using Misc;
 using UnityEngine;
 
-namespace Misc
+namespace Gameplay
 {
     public class PossibleMovesService
     {
         private readonly BoardService _boardService;
         private const float PossibleMoveYPosition = 0.5004f;
-
-
+        
         public PossibleMovesService(BoardService boardService)
         {
             _boardService = boardService;
@@ -18,21 +17,26 @@ namespace Misc
 
         public IEnumerable<Vector3> Get(Figure activeFigure)
         {
-            return activeFigure.Type switch
+            IEnumerable<BoardPosition> baseBoardPositions = GetBoardPositions(activeFigure);
+            return GetPossibleMovesWithoutCheckmate(activeFigure, baseBoardPositions).Select(FigurePositionToBoardCoord).ToList();
+        }
+
+        private IEnumerable<BoardPosition> GetBoardPositions(Figure figure)
+        {
+            return figure.Type switch
             {
-                FigureType.Pawn => GetPawnPossibleMoves(activeFigure),
-                FigureType.Tower => GetTowerPossibleMoves(activeFigure),
-                FigureType.Horse => GetHorsePossibleMoves(activeFigure),
-                FigureType.Bishop => GetBishopPossibleMoves(activeFigure),
-                FigureType.Queen => GetQueenPossibleMoves(activeFigure),
-                FigureType.King => GetKingPossibleMoves(activeFigure),
+                FigureType.Pawn => GetPawnPossibleMoves(figure),
+                FigureType.Tower => GetTowerPossibleMoves(figure),
+                FigureType.Horse => GetHorsePossibleMoves(figure),
+                FigureType.Bishop => GetBishopPossibleMoves(figure),
+                FigureType.Queen => GetQueenPossibleMoves(figure),
+                FigureType.King => GetKingPossibleMoves(figure),
                 _ => null
             };
         }
 
         // TODO add extra strike move when enemy pawn jump 2 field
-
-        private IEnumerable<Vector3> GetPawnPossibleMoves(Figure activeFigure)
+        private IEnumerable<BoardPosition> GetPawnPossibleMoves(Figure activeFigure)
         {
             List<BoardPosition> result = new List<BoardPosition>(4);
             Vector3 forwardRelVec = activeFigure.transform.forward;
@@ -42,31 +46,31 @@ namespace Misc
             Figure towardsFigure = !IsOutOfBoard(forward)
                 ? _boardService.FiguresPosition[forward.y, forward.x]
                 : null;
-            if (towardsFigure == null && !IsOutOfBoardOrTowardsFriendFigure(forward))
+            if (towardsFigure == null && !IsOutOfBoardOrTowardsFriendFigure(forward, activeFigure))
                 result.Add(forward);
 
             BoardPosition forwardTwice = activeFigure.Position + forwardRelVec * 2;
-            if (towardsFigure == null && !IsOutOfBoardOrTowardsFriendFigure(forwardTwice))
+            if (towardsFigure == null && !IsOutOfBoardOrTowardsFriendFigure(forwardTwice, activeFigure))
                 result.Add(forwardTwice);
 
             BoardPosition forwardRight = activeFigure.Position + (forwardRelVec + rightRelVec);
-            Figure forwardRightFigure = !IsOutOfBoardOrTowardsFriendFigure(forwardRight)
+            Figure forwardRightFigure = !IsOutOfBoardOrTowardsFriendFigure(forwardRight, activeFigure)
                 ? _boardService.FiguresPosition[forwardRight.y, forwardRight.x]
                 : null;
-            if (forwardRightFigure != null && forwardRightFigure.Color != _boardService.ActiveFigure.Color)
+            if (forwardRightFigure != null && forwardRightFigure.Color != activeFigure.Color)
                 result.Add(forwardRight);
 
             BoardPosition forwardLeft = activeFigure.Position + (forwardRelVec + rightRelVec * -1);
-            Figure forwardLeftFigure = !IsOutOfBoardOrTowardsFriendFigure(forwardLeft)
+            Figure forwardLeftFigure = !IsOutOfBoardOrTowardsFriendFigure(forwardLeft, activeFigure)
                 ? _boardService.FiguresPosition[forwardLeft.y, forwardLeft.x]
                 : null;
-            if (forwardLeftFigure != null && forwardLeftFigure.Color != _boardService.ActiveFigure.Color)
+            if (forwardLeftFigure != null && forwardLeftFigure.Color != activeFigure.Color)
                 result.Add(forwardLeft);
 
-            return result.Select(FigurePositionToBoardCoord).ToList();
+            return result;
         }
 
-        private IEnumerable<Vector3> GetTowerPossibleMoves(Figure activeFigure)
+        private IEnumerable<BoardPosition> GetTowerPossibleMoves(Figure activeFigure)
         {
             Vector2Int[] directions = new Vector2Int[]
             {
@@ -75,10 +79,10 @@ namespace Misc
 
             IEnumerable<BoardPosition> result = GetPossibleMovesByDirections(activeFigure, directions);
 
-            return result.Select(FigurePositionToBoardCoord).ToList();
+            return result;
         }
 
-        private IEnumerable<Vector3> GetHorsePossibleMoves(Figure activeFigure)
+        private IEnumerable<BoardPosition> GetHorsePossibleMoves(Figure activeFigure)
         {
             List<BoardPosition> result = new List<BoardPosition>(8);
             Vector3 forwardRelVec = activeFigure.transform.forward;
@@ -97,11 +101,10 @@ namespace Misc
                 forwardRight, forwardLeft, backRight, backLeft, rightBottom, rightTop, leftBottom, leftTop
             });
 
-            result = result.Where(move => !IsOutOfBoardOrTowardsFriendFigure(move)).ToList();
-            return result.Select(FigurePositionToBoardCoord).ToList();
+            return result.Where(move => !IsOutOfBoardOrTowardsFriendFigure(move, activeFigure)).ToList();
         }
 
-        private IEnumerable<Vector3> GetBishopPossibleMoves(Figure activeFigure)
+        private IEnumerable<BoardPosition> GetBishopPossibleMoves(Figure activeFigure)
         {
             Vector2Int[] directions = new Vector2Int[]
             {
@@ -110,11 +113,11 @@ namespace Misc
             };
 
             IEnumerable<BoardPosition> result = GetPossibleMovesByDirections(activeFigure, directions);
-    
-            return result.Select(FigurePositionToBoardCoord).ToList();
+
+            return result;
         }
 
-        private IEnumerable<Vector3> GetQueenPossibleMoves(Figure activeFigure)
+        private IEnumerable<BoardPosition> GetQueenPossibleMoves(Figure activeFigure)
         {
             Vector2Int[] directions = new Vector2Int[]
             {
@@ -125,10 +128,10 @@ namespace Misc
 
             IEnumerable<BoardPosition> result = GetPossibleMovesByDirections(activeFigure, directions);
 
-            return result.Select(FigurePositionToBoardCoord).ToList();
+            return result;
         }
 
-        private IEnumerable<Vector3> GetKingPossibleMoves(Figure activeFigure)
+        private IEnumerable<BoardPosition> GetKingPossibleMoves(Figure activeFigure)
         {
             Vector2Int[] directions = new Vector2Int[]
             {
@@ -139,7 +142,7 @@ namespace Misc
 
             IEnumerable<BoardPosition> result = GetPossibleMovesByDirections(activeFigure, directions, 1);
 
-            return result.Select(FigurePositionToBoardCoord).ToList();
+            return result;
         }
 
         private IEnumerable<BoardPosition> GetPossibleMovesByDirections(Figure activeFigure, IEnumerable<Vector2Int> directions, int howFar = 7)
@@ -150,7 +153,7 @@ namespace Misc
                 for (int i = 1; i <= howFar; ++i)
                 {
                     BoardPosition move = activeFigure.Position + direction * i;
-                    if (IsOutOfBoardOrTowardsFriendFigure(move))
+                    if (IsOutOfBoardOrTowardsFriendFigure(move, activeFigure))
                         break;
 
                     Figure forwardFigure = _boardService.FiguresPosition[move.y, move.x];
@@ -160,7 +163,7 @@ namespace Misc
                         continue;
                     }
 
-                    if (forwardFigure.Color == _boardService.ActiveFigure.Color) continue;
+                    if (forwardFigure.Color == activeFigure.Color) continue;
                     result.Add(move);
                     break;
                 }
@@ -171,13 +174,13 @@ namespace Misc
 
         private bool IsOutOfBoard(BoardPosition pos) => pos.x > BoardService.Border || pos.x < 0 || pos.y > BoardService.Border || pos.y < 0;
 
-        private bool IsOutOfBoardOrTowardsFriendFigure(BoardPosition pos)
+        private bool IsOutOfBoardOrTowardsFriendFigure(BoardPosition pos, Figure activeFigure)
         {
             if (IsOutOfBoard(pos))
                 return true;
 
             Figure figure = _boardService.FiguresPosition[pos.y, pos.x];
-            return figure && figure.Color == _boardService.ActiveFigure.Color;
+            return figure && figure.Color == activeFigure.Color;
         }
 
         private Vector3 FigurePositionToBoardCoord(BoardPosition pos)
@@ -186,5 +189,47 @@ namespace Misc
             result.y = PossibleMoveYPosition;
             return result;
         }
+
+        private IEnumerable<BoardPosition> GetPossibleMovesWithoutCheckmate(Figure activeFigure, IEnumerable<BoardPosition> figuresMoves)
+        {
+            List<Figure> enemyFigures = activeFigure.Color == FigureColor.White ? _boardService.BlackFigures : _boardService.WhiteFigures;
+            Figure activeKing = activeFigure.Color == FigureColor.White ? _boardService.WhiteKing : _boardService.BlackKing;
+            
+            return figuresMoves.Where(move =>
+            {
+
+                _boardService.FiguresPosition[activeFigure.Position.y, activeFigure.Position.x] = null;
+                Figure figureOnPossibleMove = _boardService.FiguresPosition[move.y, move.x];
+                _boardService.FiguresPosition[move.y, move.x] = activeFigure;
+                
+                // TODO figure on possible move will be beaten (find out what I meant))
+                enemyFigures = enemyFigures.Where(figure => !figure.WasBeaten).ToList();
+                bool willKingBeBeaten = enemyFigures.Any(figure =>
+                {
+                    IEnumerable<BoardPosition> enemyMoves = GetBoardPositions(figure);
+                    return enemyMoves.Any(enemyMove =>
+                    {
+                        return enemyMove.y == activeKing.Position.y && enemyMove.x == activeKing.Position.x;
+                    });
+                });
+
+                // TODO make figure on possible move unbeaten (find out what I meant))
+                _boardService.FiguresPosition[activeFigure.Position.y, activeFigure.Position.x] = activeFigure;
+                _boardService.FiguresPosition[move.y, move.x] = figureOnPossibleMove;
+
+                return !willKingBeBeaten;
+            });
+        }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
