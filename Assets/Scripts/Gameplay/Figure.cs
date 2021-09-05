@@ -62,7 +62,7 @@ namespace Gameplay
             _boardService.SetActiveFigure(this);
         }
 
-        public void Move(Vector3 newPosition)
+        public virtual void Move(Vector3 newPosition)
         {
             _boardService.FiguresPosition[Position.y, Position.x] = null;
             Position = BoardPosition.FromBoardCoord(newPosition);

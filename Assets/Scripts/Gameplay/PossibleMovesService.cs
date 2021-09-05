@@ -25,7 +25,7 @@ namespace Gameplay
         {
             return figure.Type switch
             {
-                FigureType.Pawn => GetPawnPossibleMoves(figure),
+                FigureType.Pawn => GetPawnPossibleMoves((Pawn)figure),
                 FigureType.Tower => GetTowerPossibleMoves(figure),
                 FigureType.Horse => GetHorsePossibleMoves(figure),
                 FigureType.Bishop => GetBishopPossibleMoves(figure),
@@ -36,7 +36,7 @@ namespace Gameplay
         }
 
         // TODO add extra strike move when enemy pawn jump 2 field
-        private IEnumerable<BoardPosition> GetPawnPossibleMoves(Figure activeFigure)
+        private IEnumerable<BoardPosition> GetPawnPossibleMoves(Pawn activeFigure)
         {
             List<BoardPosition> result = new List<BoardPosition>(4);
             Vector3 forwardRelVec = activeFigure.transform.forward;
@@ -49,9 +49,15 @@ namespace Gameplay
             if (towardsFigure == null && !IsOutOfBoardOrTowardsFriendFigure(forward, activeFigure))
                 result.Add(forward);
 
-            BoardPosition forwardTwice = activeFigure.Position + forwardRelVec * 2;
-            if (towardsFigure == null && !IsOutOfBoardOrTowardsFriendFigure(forwardTwice, activeFigure))
-                result.Add(forwardTwice);
+            if (activeFigure.CanDoubleMove)
+            {
+                BoardPosition forwardTwice = activeFigure.Position + forwardRelVec * 2;
+                Figure doubleTowardsFigure = !IsOutOfBoard(forwardTwice)
+                    ? _boardService.FiguresPosition[forwardTwice.y, forwardTwice.x]
+                    : null;
+                if (towardsFigure == null && doubleTowardsFigure == null && !IsOutOfBoard(forwardTwice))
+                    result.Add(forwardTwice);
+            }
 
             BoardPosition forwardRight = activeFigure.Position + (forwardRelVec + rightRelVec);
             Figure forwardRightFigure = !IsOutOfBoardOrTowardsFriendFigure(forwardRight, activeFigure)

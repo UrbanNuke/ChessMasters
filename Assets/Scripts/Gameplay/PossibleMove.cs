@@ -9,7 +9,7 @@ namespace Gameplay
         private BoardService _boardService;
         private Figure _possibleFigure;
         private Material _figureInitialMaterial;
-        private const string MovePositionMaterialPath = "Materials/M_Highlight";
+        private const string HighlightMaterialPath = "Materials/M_Highlight";
 
         [Inject]
         private void Construct(BoardService boardService)
@@ -32,7 +32,7 @@ namespace Gameplay
                 GetComponent<MeshRenderer>().enabled = false;
                 _possibleFigure.CanBeBeaten = true;
                 _figureInitialMaterial = _possibleFigure.GetComponent<MeshRenderer>().material;
-                Material movePositionMaterial = Resources.Load(MovePositionMaterialPath) as Material;
+                Material movePositionMaterial = Resources.Load(HighlightMaterialPath) as Material;
                 _possibleFigure.ChangeMaterial(movePositionMaterial);
             }
         }
