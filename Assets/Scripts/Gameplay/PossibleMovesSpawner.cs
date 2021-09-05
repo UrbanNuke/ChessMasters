@@ -1,5 +1,5 @@
-﻿using Factories;
-using Misc;
+﻿using System.Collections;
+using Factories;
 using UnityEngine;
 using Zenject;
 
@@ -30,18 +30,23 @@ namespace Gameplay
 
         private void SpawnPossibleMoves(Figure figure)
         {
+            StartCoroutine(SpawnPossibleMovesCoroutine(figure));
+        }
+
+        private IEnumerator SpawnPossibleMovesCoroutine(Figure figure)
+        {
             foreach (Transform move in possibleMovesContainer)
-            {
                 Destroy(move.gameObject);
-            }
+            
+            // requires(!) so OnDestroy(possibleMove) should call first, only then create new possibleMoves
+            // otherwise undefined behaviour when select figure 
+            yield return new WaitUntil(() => possibleMovesContainer.childCount == 0);
             
             if (figure == null) 
-                return;
+                yield break;
 
             foreach (Vector3 move in _possibleMovesService.Get(figure))
-            {
                 _possibleMovesFactory.Create(move, Quaternion.identity, possibleMovesContainer);
-            }
         }
     }
 }
