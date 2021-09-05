@@ -17,6 +17,15 @@ namespace Infrastructure
             BindBoardService();
             BindPossibleMovesService();
             BindBeatenFigures();
+            BindHistoryService();
+        }
+
+        private void BindHistoryService()
+        {
+            Container
+                .Bind<HistoryService>()
+                .AsSingle()
+                .NonLazy();
         }
 
         private void BindBeatenFigures()

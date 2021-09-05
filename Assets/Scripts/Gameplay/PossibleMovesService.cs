@@ -34,8 +34,7 @@ namespace Gameplay
                 _ => null
             };
         }
-
-        // TODO add extra strike move when enemy pawn jump 2 field
+        
         private IEnumerable<BoardPosition> GetPawnPossibleMoves(Pawn activeFigure)
         {
             List<BoardPosition> result = new List<BoardPosition>(4);
@@ -43,7 +42,7 @@ namespace Gameplay
             Vector3 rightRelVec = activeFigure.transform.right;
 
             BoardPosition forward = activeFigure.Position + forwardRelVec;
-            Figure towardsFigure = !IsOutOfBoard(forward)
+            Figure towardsFigure = !BoardPosition.IsOutOfBoard(forward)
                 ? _boardService.FiguresPosition[forward.y, forward.x]
                 : null;
             if (towardsFigure == null && !IsOutOfBoardOrTowardsFriendFigure(forward, activeFigure))
@@ -52,10 +51,10 @@ namespace Gameplay
             if (activeFigure.CanDoubleMove)
             {
                 BoardPosition forwardTwice = activeFigure.Position + forwardRelVec * 2;
-                Figure doubleTowardsFigure = !IsOutOfBoard(forwardTwice)
+                Figure doubleTowardsFigure = !BoardPosition.IsOutOfBoard(forwardTwice)
                     ? _boardService.FiguresPosition[forwardTwice.y, forwardTwice.x]
                     : null;
-                if (towardsFigure == null && doubleTowardsFigure == null && !IsOutOfBoard(forwardTwice))
+                if (towardsFigure == null && doubleTowardsFigure == null && !BoardPosition.IsOutOfBoard(forwardTwice))
                     result.Add(forwardTwice);
             }
 
@@ -72,6 +71,21 @@ namespace Gameplay
                 : null;
             if (forwardLeftFigure != null && forwardLeftFigure.Color != activeFigure.Color)
                 result.Add(forwardLeft);
+            
+            // EnPassant moves
+            BoardPosition figureLeftBoardPosition = activeFigure.Position + (rightRelVec * -1);
+            Figure leftFigure = !BoardPosition.IsOutOfBoard(figureLeftBoardPosition)
+                ? _boardService.FiguresPosition[figureLeftBoardPosition.y, figureLeftBoardPosition.x]
+                : null;
+            if (leftFigure is Pawn leftPawn && leftPawn.CanBeBeatenByEnPassant && leftPawn.Color != activeFigure.Color)
+                result.Add(forwardLeft);
+            
+            BoardPosition figureRightBoardPosition = activeFigure.Position + rightRelVec;
+            Figure rightFigure = !BoardPosition.IsOutOfBoard(figureRightBoardPosition)
+                ? _boardService.FiguresPosition[figureRightBoardPosition.y, figureRightBoardPosition.x]
+                : null;
+            if (rightFigure is Pawn rightPawn && rightPawn.CanBeBeatenByEnPassant && rightPawn.Color != activeFigure.Color)
+                result.Add(forwardRight);
 
             return result;
         }
@@ -178,11 +192,9 @@ namespace Gameplay
             return result;
         }
 
-        private bool IsOutOfBoard(BoardPosition pos) => pos.x > BoardService.Border || pos.x < 0 || pos.y > BoardService.Border || pos.y < 0;
-
         private bool IsOutOfBoardOrTowardsFriendFigure(BoardPosition pos, Figure activeFigure)
         {
-            if (IsOutOfBoard(pos))
+            if (BoardPosition.IsOutOfBoard(pos))
                 return true;
 
             Figure figure = _boardService.FiguresPosition[pos.y, pos.x];

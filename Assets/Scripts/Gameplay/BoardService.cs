@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Misc;
 using UnityEngine;
 
@@ -7,7 +8,6 @@ namespace Gameplay
 {
     public class BoardService
     {
-        private readonly BeatenFigures _beatenFigures;
         public event Action<Figure> OnFigureSelected;
 
         public const int Rows = 8;
@@ -27,10 +27,14 @@ namespace Gameplay
         public Figure ActiveFigure { get; private set; }
         public bool IsFigureMoving { get; set; }
         public FigureColor ActivePlayer { get; private set; } = FigureColor.White;
+        
+        private readonly BeatenFigures _beatenFigures;
+        private readonly HistoryService _historyService;
 
-        public BoardService(BeatenFigures beatenFigures)
+        public BoardService(BeatenFigures beatenFigures, HistoryService historyService)
         {
             _beatenFigures = beatenFigures;
+            _historyService = historyService;
             for (int i = 0; i < Rows; ++i)
             {
                 for (int j = 0; j < Columns; ++j)
@@ -74,6 +78,7 @@ namespace Gameplay
         public void EndFigureMove()
         {
             IsFigureMoving = false;
+            ClearPawnsEnPassantStatus();
             ActivePlayer = ActivePlayer == FigureColor.White ? FigureColor.Black : FigureColor.White;
         }
 
@@ -113,6 +118,24 @@ namespace Gameplay
             }
 
             return null;
+        }
+
+        private void ClearPawnsEnPassantStatus()
+        {
+            HistoryEl lastMove = _historyService.History[_historyService.History.Count - 1];
+            
+            List<Figure> oneSideFigures = lastMove.FigureMeta.color == FigureColor.White
+                ? WhiteFigures
+                : BlackFigures;
+
+            oneSideFigures
+                .Where(figure => !figure.WasBeaten && figure.Type == FigureType.Pawn && figure != lastMove.Figure)
+                .ToList()
+                .ForEach(figure =>
+                {
+                    if (figure is Pawn pawn)
+                        pawn.CanBeBeatenByEnPassant = false;
+                });
         }
     }
 }

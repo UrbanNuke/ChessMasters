@@ -37,5 +37,10 @@ namespace Misc
                 (int)(Math.Round(vec.x / BoardService.FieldOffset))
             );
         }
+        
+        public static bool IsOutOfBoard(BoardPosition pos)
+        {
+            return pos.x > BoardService.Border || pos.x < 0 || pos.y > BoardService.Border || pos.y < 0;
+        }
     }
 }

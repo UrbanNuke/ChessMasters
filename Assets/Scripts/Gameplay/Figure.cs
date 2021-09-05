@@ -19,13 +19,15 @@ namespace Gameplay
         public bool CanBeBeaten { get; set; }
         public bool WasBeaten { get; set; }
 
-        private BoardService _boardService;
+        protected BoardService _boardService;
+        private HistoryService _historyService;
         private Outline _outline;
 
         [Inject]
-        private void Construct(BoardService boardService)
+        private void Construct(BoardService boardService, HistoryService historyService)
         {
             _boardService = boardService;
+            _historyService = historyService;
             _outline = GetComponent<Outline>();
         }
 
@@ -72,6 +74,8 @@ namespace Gameplay
                 _boardService.BeatFigure(figureOnNewPosition);
             }
             _boardService.FiguresPosition[Position.y, Position.x] = this;
+            
+            _historyService.Add(new HistoryEl(this));
             
             _boardService.SetActiveFigure(null);
             _boardService.IsFigureMoving = true;
