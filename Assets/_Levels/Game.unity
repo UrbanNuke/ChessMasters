@@ -582,6 +582,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   beatenFiguresPrefab: {fileID: 4486554941901090391, guid: 5456aee0e39c8024bb421894161ec60a, type: 3}
+  debugServicePrefab: {fileID: 9032686428982193247, guid: 8569a107429a6bc449ae834b1cb7a7a8, type: 3}
 --- !u!1 &1952731782
 GameObject:
   m_ObjectHideFlags: 0

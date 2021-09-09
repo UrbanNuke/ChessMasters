@@ -9,6 +9,7 @@ namespace Infrastructure
     public class MainInstaller : MonoInstaller
     {
         public GameObject beatenFiguresPrefab;
+        public GameObject debugServicePrefab;
         
         public override void InstallBindings()
         {
@@ -18,6 +19,18 @@ namespace Infrastructure
             BindPossibleMovesService();
             BindBeatenFigures();
             BindHistoryService();
+            BindDebugService();
+        }
+
+        private void BindDebugService()
+        {
+            #if UNITY_EDITOR
+            Container
+                .Bind<DebugService>()
+                .FromComponentInNewPrefab(debugServicePrefab)
+                .AsSingle()
+                .NonLazy();
+            #endif
         }
 
         private void BindHistoryService()
