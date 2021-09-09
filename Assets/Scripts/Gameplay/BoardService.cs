@@ -9,6 +9,7 @@ namespace Gameplay
     public class BoardService
     {
         public event Action<Figure> OnFigureSelected;
+        public event Func<FigureColor, bool> OnFigureWasMoved;
 
         public const int Rows = 8;
         public const int Columns = 8;
@@ -27,6 +28,8 @@ namespace Gameplay
         public Figure ActiveFigure { get; private set; }
         public bool IsFigureMoving { get; set; }
         public FigureColor ActivePlayer { get; private set; } = FigureColor.White;
+
+        public BoardState BoardState { get; private set; } = BoardState.None;
         
         private readonly BeatenFigures _beatenFigures;
         private readonly HistoryService _historyService;
@@ -80,6 +83,9 @@ namespace Gameplay
             IsFigureMoving = false;
             ClearPawnsEnPassantStatus();
             ActivePlayer = ActivePlayer == FigureColor.White ? FigureColor.Black : FigureColor.White;
+            bool? isCheckState = OnFigureWasMoved?.Invoke(ActivePlayer);
+            if (isCheckState.HasValue && isCheckState.Value)
+                BoardState = BoardState.Check;
         }
 
         public void BeatFigure(Figure beatenFigure)
@@ -137,5 +143,7 @@ namespace Gameplay
                         pawn.CanBeBeatenByEnPassant = false;
                 });
         }
+
+        
     }
 }

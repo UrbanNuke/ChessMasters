@@ -13,6 +13,7 @@ namespace Gameplay
         public PossibleMovesService(BoardService boardService)
         {
             _boardService = boardService;
+            _boardService.OnFigureWasMoved += IsCheck;
         }
 
         public IEnumerable<Vector3> Get(Figure activeFigure)
@@ -210,32 +211,43 @@ namespace Gameplay
 
         private IEnumerable<BoardPosition> GetPossibleMovesWithoutCheckmate(Figure activeFigure, IEnumerable<BoardPosition> figuresMoves)
         {
-            List<Figure> enemyFigures = activeFigure.Color == FigureColor.White ? _boardService.BlackFigures : _boardService.WhiteFigures;
-            Figure activeKing = activeFigure.Color == FigureColor.White ? _boardService.WhiteKing : _boardService.BlackKing;
+            BoardPosition initialActiveFigurePosition = activeFigure.Position;
             
             return figuresMoves.Where(move =>
             {
-
+                
                 _boardService.FiguresPosition[activeFigure.Position.y, activeFigure.Position.x] = null;
-                Figure figureOnPossibleMove = _boardService.FiguresPosition[move.y, move.x];
+                Figure enemyFigureOnPossibleMove = _boardService.FiguresPosition[move.y, move.x];
+                if (enemyFigureOnPossibleMove) 
+                    enemyFigureOnPossibleMove.WasBeaten = true;
+                
+                activeFigure.SetPosition(new BoardPosition(move.y, move.x));
                 _boardService.FiguresPosition[move.y, move.x] = activeFigure;
                 
-                // TODO figure on possible move will be beaten (find out what I meant))
-                enemyFigures = enemyFigures.Where(figure => !figure.WasBeaten).ToList();
-                bool willKingBeBeaten = enemyFigures.Any(figure =>
-                {
-                    IEnumerable<BoardPosition> enemyMoves = GetBoardPositions(figure);
-                    return enemyMoves.Any(enemyMove =>
-                    {
-                        return enemyMove.y == activeKing.Position.y && enemyMove.x == activeKing.Position.x;
-                    });
-                });
-
-                // TODO make figure on possible move unbeaten (find out what I meant))
+                bool willKingBeBeaten = IsCheck(activeFigure.Color);
+                
+                activeFigure.SetPosition(initialActiveFigurePosition);
                 _boardService.FiguresPosition[activeFigure.Position.y, activeFigure.Position.x] = activeFigure;
-                _boardService.FiguresPosition[move.y, move.x] = figureOnPossibleMove;
+                _boardService.FiguresPosition[move.y, move.x] = enemyFigureOnPossibleMove;
+                if (enemyFigureOnPossibleMove) 
+                    enemyFigureOnPossibleMove.WasBeaten = false;
 
                 return !willKingBeBeaten;
+            });
+        }
+        
+        private bool IsCheck(FigureColor activePlayer)
+        {
+            List<Figure> enemyFigures = activePlayer == FigureColor.White ? _boardService.BlackFigures : _boardService.WhiteFigures;
+            Figure activeKing = activePlayer == FigureColor.White ? _boardService.WhiteKing : _boardService.BlackKing;
+            enemyFigures = enemyFigures.Where(figure => !figure.WasBeaten).ToList();
+            return enemyFigures.Any(figure =>
+            {
+                IEnumerable<BoardPosition> enemyMoves = GetBoardPositions(figure);
+                return enemyMoves.Any(enemyMove =>
+                {
+                    return enemyMove.y == activeKing.Position.y && enemyMove.x == activeKing.Position.x;
+                });
             });
         }
     }

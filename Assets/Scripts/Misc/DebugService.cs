@@ -31,9 +31,10 @@ namespace Misc
 
         private void BuildOutputText()
         {
-            string activeFigure = _boardService.ActiveFigure ? _boardService.ActiveFigure.Type.ToString() : "none";
-            _output.text = $"Active figure: {activeFigure}\n";
-            string lastMoveString = "none";
+            _output.text = $"Board state: {_boardService.BoardState.ToString()}\n";
+            string activeFigure = _boardService.ActiveFigure ? _boardService.ActiveFigure.Type.ToString() : "None";
+            _output.text += $"Active figure: {activeFigure}\n";
+            string lastMoveString = "None";
             if (_historyService.History.Count > 0)
             {
                 HistoryEl lastMove = _historyService.History[_historyService.History.Count - 1];
