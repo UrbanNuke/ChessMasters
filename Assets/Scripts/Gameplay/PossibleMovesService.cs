@@ -14,6 +14,7 @@ namespace Gameplay
         {
             _boardService = boardService;
             _boardService.OnFigureWasMoved += IsCheck;
+            _boardService.OnPlayerCheck += isCheckmate;
         }
 
         public IEnumerable<Vector3> Get(Figure activeFigure)
@@ -249,6 +250,16 @@ namespace Gameplay
                     return enemyMove.y == activeKing.Position.y && enemyMove.x == activeKing.Position.x;
                 });
             });
+        }
+        
+        private bool isCheckmate(FigureColor activePlayer)
+        {
+            List<Figure> activePlayerFigures = activePlayer == FigureColor.White ? _boardService.WhiteFigures : _boardService.BlackFigures;
+            bool hasAnyMove;
+            hasAnyMove = activePlayerFigures
+                .Where(figure => !figure.WasBeaten)
+                .Any(figure => Get(figure).ToList().Count > 0);
+            return !hasAnyMove;
         }
     }
 }

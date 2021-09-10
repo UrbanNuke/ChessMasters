@@ -10,6 +10,7 @@ namespace Gameplay
     {
         public event Action<Figure> OnFigureSelected;
         public event Func<FigureColor, bool> OnFigureWasMoved;
+        public event Func<FigureColor, bool> OnPlayerCheck;
 
         public const int Rows = 8;
         public const int Columns = 8;
@@ -84,8 +85,13 @@ namespace Gameplay
             ClearPawnsEnPassantStatus();
             ActivePlayer = ActivePlayer == FigureColor.White ? FigureColor.Black : FigureColor.White;
             bool? isCheckState = OnFigureWasMoved?.Invoke(ActivePlayer);
-            if (isCheckState.HasValue && isCheckState.Value)
-                BoardState = BoardState.Check;
+            
+            if (!isCheckState.HasValue || !isCheckState.Value) return;
+            
+            BoardState = BoardState.Check;
+            bool? isCheckmateState = OnPlayerCheck?.Invoke(ActivePlayer);
+            if (isCheckmateState.HasValue && isCheckmateState.Value)
+                BoardState = BoardState.Checkmate;
         }
 
         public void BeatFigure(Figure beatenFigure)
@@ -143,7 +149,5 @@ namespace Gameplay
                         pawn.CanBeBeatenByEnPassant = false;
                 });
         }
-
-        
     }
 }
