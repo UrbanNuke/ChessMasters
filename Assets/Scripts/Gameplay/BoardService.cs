@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Misc;
+using UI;
 using UnityEngine;
 
 namespace Gameplay
@@ -34,11 +35,13 @@ namespace Gameplay
         
         private readonly BeatenFigures _beatenFigures;
         private readonly HistoryService _historyService;
+        private readonly UIService _uiService;
 
-        public BoardService(BeatenFigures beatenFigures, HistoryService historyService)
+        public BoardService(BeatenFigures beatenFigures, HistoryService historyService, UIService uiService)
         {
             _beatenFigures = beatenFigures;
             _historyService = historyService;
+            _uiService = uiService;
             for (int i = 0; i < Rows; ++i)
             {
                 for (int j = 0; j < Columns; ++j)
@@ -85,13 +88,20 @@ namespace Gameplay
             ClearPawnsEnPassantStatus();
             ActivePlayer = ActivePlayer == FigureColor.White ? FigureColor.Black : FigureColor.White;
             bool? isCheckState = OnFigureWasMoved?.Invoke(ActivePlayer);
-            
-            if (!isCheckState.HasValue || !isCheckState.Value) return;
-            
-            BoardState = BoardState.Check;
-            bool? isCheckmateState = OnPlayerCheck?.Invoke(ActivePlayer);
-            if (isCheckmateState.HasValue && isCheckmateState.Value)
-                BoardState = BoardState.Checkmate;
+
+            if (isCheckState.HasValue || isCheckState.Value)
+            {
+                bool? isCheckmateState = OnPlayerCheck?.Invoke(ActivePlayer);
+                if (isCheckmateState.HasValue && isCheckmateState.Value)
+                {
+                    BoardState = BoardState.Checkmate;
+                    _uiService.ShowCheckmateText();
+                    return;
+                } 
+                
+                BoardState = BoardState.Check;
+                _uiService.ShowCheckText();
+            }
         }
 
         public void BeatFigure(Figure beatenFigure)
