@@ -89,7 +89,7 @@ namespace Gameplay
             ActivePlayer = ActivePlayer == FigureColor.White ? FigureColor.Black : FigureColor.White;
             bool? isCheckState = OnFigureWasMoved?.Invoke(ActivePlayer);
 
-            if (isCheckState.HasValue || isCheckState.Value)
+            if (isCheckState.HasValue && isCheckState.Value)
             {
                 bool? isCheckmateState = OnPlayerCheck?.Invoke(ActivePlayer);
                 if (isCheckmateState.HasValue && isCheckmateState.Value)
