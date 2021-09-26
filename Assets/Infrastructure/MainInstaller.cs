@@ -1,7 +1,6 @@
 ﻿using Factories;
 using Gameplay;
 using Misc;
-using UI;
 using UnityEngine;
 using Zenject;
 
@@ -11,7 +10,7 @@ namespace Infrastructure
     {
         public GameObject beatenFiguresPrefab;
         public GameObject debugServicePrefab;
-        public GameObject UIServicePrefab;
+        public GameObject cameraPrefab;
         
         public override void InstallBindings()
         {
@@ -21,15 +20,15 @@ namespace Infrastructure
             BindPossibleMovesService();
             BindBeatenFigures();
             BindHistoryService();
-            BindUIService();
             BindDebugService();
+            BindCamera();
         }
 
-        private void BindUIService()
+        private void BindCamera()
         {
             Container
-                .Bind<UIService>()
-                .FromComponentInNewPrefab(UIServicePrefab)
+                .Bind<CameraController>()
+                .FromComponentInNewPrefab(cameraPrefab)
                 .AsSingle()
                 .NonLazy();
         }

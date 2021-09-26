@@ -73,3 +73,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3333abed48b40a884ba28736dad724e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  UIServicePrefab: {fileID: 6012698524355087879, guid: f728c07da7534eb4c9657181eb20d98c, type: 3}

@@ -13,8 +13,8 @@ namespace Gameplay
         public PossibleMovesService(BoardService boardService)
         {
             _boardService = boardService;
-            _boardService.OnFigureWasMoved += IsCheck;
-            _boardService.OnPlayerCheck += isCheckmate;
+            _boardService.OnFigureWasMovedWithCheckResult += IsCheck;
+            _boardService.OnPlayerCheck += IsCheckmate;
         }
 
         public IEnumerable<Vector3> Get(Figure activeFigure)
@@ -252,7 +252,7 @@ namespace Gameplay
             });
         }
         
-        private bool isCheckmate(FigureColor activePlayer)
+        private bool IsCheckmate(FigureColor activePlayer)
         {
             List<Figure> activePlayerFigures = activePlayer == FigureColor.White ? _boardService.WhiteFigures : _boardService.BlackFigures;
             bool hasAnyMove;

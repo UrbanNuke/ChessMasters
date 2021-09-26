@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71c1514a6bd24e1e882cebbe1904ce04, type: 3}
   m_Name: BebasNeue-RegularTMP
   m_EditorClassIdentifier: 
-  hashCode: 992206944
+  hashCode: -1615834190
   material: {fileID: 2344821178545569056}
-  materialHashCode: 507233984
+  materialHashCode: -444651950
   m_Version: 1.1.0
   m_SourceFontFileGUID: b558824286b73504584d4dfb6ef2d6cc
   m_SourceFontFile_EditorRef: {fileID: 12800000, guid: b558824286b73504584d4dfb6ef2d6cc, type: 3}

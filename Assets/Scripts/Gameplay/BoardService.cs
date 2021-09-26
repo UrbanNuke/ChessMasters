@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Misc;
-using UI;
 using UnityEngine;
 
 namespace Gameplay
@@ -10,7 +9,7 @@ namespace Gameplay
     public class BoardService
     {
         public event Action<Figure> OnFigureSelected;
-        public event Func<FigureColor, bool> OnFigureWasMoved;
+        public event Func<FigureColor, bool> OnFigureWasMovedWithCheckResult;
         public event Func<FigureColor, bool> OnPlayerCheck;
 
         public const int Rows = 8;
@@ -32,16 +31,19 @@ namespace Gameplay
         public FigureColor ActivePlayer { get; private set; } = FigureColor.White;
 
         public BoardState BoardState { get; private set; } = BoardState.None;
-        
+
+        public GameState GameState { get; private set; } = GameState.MainMenu;
+
         private readonly BeatenFigures _beatenFigures;
         private readonly HistoryService _historyService;
-        private readonly UIService _uiService;
+        private readonly EventDeliveryService _eventDeliveryService;
 
-        public BoardService(BeatenFigures beatenFigures, HistoryService historyService, UIService uiService)
+        public BoardService(BeatenFigures beatenFigures, HistoryService historyService, EventDeliveryService eventDeliveryService)
         {
             _beatenFigures = beatenFigures;
             _historyService = historyService;
-            _uiService = uiService;
+            _eventDeliveryService = eventDeliveryService;
+            _eventDeliveryService.OnUIGameStart += StartGame;
             for (int i = 0; i < Rows; ++i)
             {
                 for (int j = 0; j < Columns; ++j)
@@ -87,7 +89,8 @@ namespace Gameplay
             IsFigureMoving = false;
             ClearPawnsEnPassantStatus();
             ActivePlayer = ActivePlayer == FigureColor.White ? FigureColor.Black : FigureColor.White;
-            bool? isCheckState = OnFigureWasMoved?.Invoke(ActivePlayer);
+            _eventDeliveryService.SwitchPlayerSide();
+            bool? isCheckState = OnFigureWasMovedWithCheckResult?.Invoke(ActivePlayer);
 
             if (isCheckState.HasValue && isCheckState.Value)
             {
@@ -95,12 +98,12 @@ namespace Gameplay
                 if (isCheckmateState.HasValue && isCheckmateState.Value)
                 {
                     BoardState = BoardState.Checkmate;
-                    _uiService.ShowCheckmateText();
+                    _eventDeliveryService.PlayerCheckmate();
                     return;
                 } 
                 
                 BoardState = BoardState.Check;
-                _uiService.ShowCheckText();
+                _eventDeliveryService.PlayerCheck();
             }
         }
 
@@ -158,6 +161,14 @@ namespace Gameplay
                     if (figure is Pawn pawn)
                         pawn.CanBeBeatenByEnPassant = false;
                 });
+        }
+
+        private void StartGame(GameMode mode)
+        {
+            if (mode == GameMode.PlayerVsPlayer)
+            {
+                GameState = GameState.Play;
+            }
         }
     }
 }

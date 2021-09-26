@@ -1,10 +1,9 @@
 fileFormatVersion: 2
-guid: d3333abed48b40a884ba28736dad724e
+guid: 5df7e1627460adf45a3e4c9e383cc87e
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences:
-  - UIServicePrefab: {instanceID: 0}
+  defaultReferences: []
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

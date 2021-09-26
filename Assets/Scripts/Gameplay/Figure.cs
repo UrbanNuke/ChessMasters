@@ -22,12 +22,14 @@ namespace Gameplay
         protected BoardService _boardService;
         private HistoryService _historyService;
         private Outline _outline;
+        private EventDeliveryService _eventDeliveryService;
 
         [Inject]
-        private void Construct(BoardService boardService, HistoryService historyService)
+        private void Construct(BoardService boardService, HistoryService historyService, EventDeliveryService eventDeliveryService)
         {
             _boardService = boardService;
             _historyService = historyService;
+            _eventDeliveryService = eventDeliveryService;
             _outline = GetComponent<Outline>();
         }
 
@@ -86,11 +88,16 @@ namespace Gameplay
 
         private bool CanChooseOrHoverFigure()
         {
-            return this != _boardService.ActiveFigure && !_boardService.IsFigureMoving && Color == _boardService.ActivePlayer && !WasBeaten;
+            return _boardService.GameState == GameState.Play
+                   && this != _boardService.ActiveFigure 
+                   && !_boardService.IsFigureMoving 
+                   && Color == _boardService.ActivePlayer 
+                   && !WasBeaten;
         }
 
         private IEnumerator MoveFigure(Vector3 newPosition)
         {
+            _eventDeliveryService.UICameraButtonEnabled(false);
             float t = 0f;
             Vector3 distance = newPosition - transform.position;
             Vector3 firstBezierPoint = transform.position;
