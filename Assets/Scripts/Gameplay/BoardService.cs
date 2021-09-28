@@ -147,14 +147,20 @@ namespace Gameplay
 
         private void ClearPawnsEnPassantStatus()
         {
-            HistoryEl lastMove = _historyService.History[_historyService.History.Count - 1];
+            List<HistoryEl> history = _historyService.History;
+            HistoryEl lastMove = history[_historyService.History.Count - 1];
             
             List<Figure> oneSideFigures = lastMove.FigureMeta.color == FigureColor.White
                 ? WhiteFigures
                 : BlackFigures;
 
             oneSideFigures
-                .Where(figure => !figure.WasBeaten && figure.Type == FigureType.Pawn && figure != lastMove.Figure)
+                .Where(figure =>
+                {
+                    return !figure.WasBeaten 
+                           && figure.Type == FigureType.Pawn 
+                           && (figure != lastMove.Figure || history.FindAll(item => item.Figure == figure).Count > 1);
+                })
                 .ToList()
                 .ForEach(figure =>
                 {
