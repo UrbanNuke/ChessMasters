@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="MainMenu.uss" />
+    <ui:VisualElement name="endgame-menu" style="flex-grow: 0; align-items: center; justify-content: center; width: 1920px; height: 1080px;">
+        <ui:Button text="Retry" display-tooltip-when-elided="true" name="endgame-menu__retry-button" class="button" style="margin-top: 300px; width: auto; height: auto; align-items: stretch; flex-shrink: 0; justify-content: flex-start; -unity-text-outline-width: 0; text-shadow: 3px 3px 0 rgb(0, 0, 0); letter-spacing: 0; -unity-font-definition: resource(&apos;Fonts/BebasNeue-Regular SDF&apos;); -unity-font-style: bold; -unity-font: url(&apos;/Assets/UI/Resources/Fonts/BebasNeue-Regular.ttf&apos;);" />
+        <ui:Button text="Main menu" display-tooltip-when-elided="true" name="endgame-menu__main-menu-button" class="button" style="-unity-text-outline-width: 0; text-shadow: 3px 3px 0 rgb(0, 0, 0); -unity-font-style: bold; -unity-font-definition: resource(&apos;Fonts/BebasNeue-Regular SDF&apos;); -unity-text-outline-color: rgb(0, 0, 0);" />
+    </ui:VisualElement>
+</ui:UXML>

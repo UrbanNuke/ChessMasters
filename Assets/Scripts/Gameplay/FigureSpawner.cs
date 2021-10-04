@@ -12,13 +12,16 @@ namespace Gameplay
 
         private IFigureFactory _figureFactory;
         private BoardService _boardService;
+        private EventDeliveryService _eventDeliveryService;
 
         [Inject]
-        public void Construct(IFigureFactory figureFactory, BoardService boardService)
+        public void Construct(IFigureFactory figureFactory, BoardService boardService, EventDeliveryService eventDeliveryService)
         {
             _boardService = boardService;
             _figureFactory = figureFactory;
             _figureFactory.Load();
+            _eventDeliveryService = eventDeliveryService;
+            _eventDeliveryService.OnBoardRestart += SpawnFiguresToStart;
             SpawnFiguresToStart();
         }
 

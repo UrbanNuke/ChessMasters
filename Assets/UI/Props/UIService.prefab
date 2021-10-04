@@ -47,6 +47,53 @@ MonoBehaviour:
   m_ParentUI: {fileID: 0}
   sourceAsset: {fileID: 9197481963319205126, guid: 821d310157f56d54b94b06925644e49d, type: 3}
   m_SortingOrder: 0
+--- !u!1 &1578454487006451386
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1101298618674126618}
+  - component: {fileID: 4468675959026141672}
+  m_Layer: 0
+  m_Name: EndGameMenu
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &1101298618674126618
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1578454487006451386}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 6012698524355087872}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4468675959026141672
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1578454487006451386}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f21c074d86024caca2a0034ce4f53f73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PanelSettings: {fileID: 11400000, guid: c6f17da6f8a992c49b9508ddeb7da74e, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 9197481963319205126, guid: 1ac863d670c032a4fa7ea991167dd093, type: 3}
+  m_SortingOrder: 0
 --- !u!1 &3796069415888673798
 GameObject:
   m_ObjectHideFlags: 0
@@ -125,6 +172,7 @@ Transform:
   - {fileID: 6012698526060608076}
   - {fileID: 428007342866383971}
   - {fileID: 1567612638632242475}
+  - {fileID: 1101298618674126618}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -144,6 +192,7 @@ MonoBehaviour:
   popupCheckmateText: {fileID: 6012698525929759273}
   mainMenu: {fileID: 4253191138985597686}
   gameUI: {fileID: 7040936826336488033}
+  endGameMenu: {fileID: 4468675959026141672}
 --- !u!1 &6012698525929759273
 GameObject:
   m_ObjectHideFlags: 0
@@ -155,7 +204,7 @@ GameObject:
   - component: {fileID: 6012698525929759274}
   - component: {fileID: 6012698525929759269}
   - component: {fileID: 6012698525929759268}
-  - component: {fileID: 6012698525929759275}
+  - component: {fileID: 3810243335473337506}
   m_Layer: 5
   m_Name: PopupCheckmateText
   m_TagString: Untagged
@@ -281,7 +330,7 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!111 &6012698525929759275
+--- !u!111 &3810243335473337506
 Animation:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -292,7 +341,6 @@ Animation:
   serializedVersion: 3
   m_Animation: {fileID: 7400000, guid: 05d0a5602886ae44abf40223fdef93bc, type: 2}
   m_Animations:
-  - {fileID: 7400000, guid: 1ad4eb82355d409449d4da61f15e32c9, type: 2}
   - {fileID: 7400000, guid: 05d0a5602886ae44abf40223fdef93bc, type: 2}
   m_WrapMode: 0
   m_PlayAutomatically: 1

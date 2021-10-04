@@ -44,6 +44,7 @@ namespace Gameplay
             _historyService = historyService;
             _eventDeliveryService = eventDeliveryService;
             _eventDeliveryService.OnUIGameStart += StartGame;
+            _eventDeliveryService.OnUIRetryGame += RestartGame;
             for (int i = 0; i < Rows; ++i)
             {
                 for (int j = 0; j < Columns; ++j)
@@ -89,7 +90,6 @@ namespace Gameplay
             IsFigureMoving = false;
             ClearPawnsEnPassantStatus();
             ActivePlayer = ActivePlayer == FigureColor.White ? FigureColor.Black : FigureColor.White;
-            _eventDeliveryService.SwitchPlayerSide();
             bool? isCheckState = OnFigureWasMovedWithCheckResult?.Invoke(ActivePlayer);
 
             if (isCheckState.HasValue && isCheckState.Value)
@@ -98,12 +98,18 @@ namespace Gameplay
                 if (isCheckmateState.HasValue && isCheckmateState.Value)
                 {
                     BoardState = BoardState.Checkmate;
+                    GameState = GameState.End;
                     _eventDeliveryService.PlayerCheckmate();
                     return;
-                } 
-                
+                }
+
                 BoardState = BoardState.Check;
                 _eventDeliveryService.PlayerCheck();
+            }
+
+            if (BoardState != BoardState.Checkmate)
+            {
+                _eventDeliveryService.SwitchPlayerSide();
             }
         }
 
@@ -149,7 +155,7 @@ namespace Gameplay
         {
             List<HistoryEl> history = _historyService.History;
             HistoryEl lastMove = history[_historyService.History.Count - 1];
-            
+
             List<Figure> oneSideFigures = lastMove.FigureMeta.color == FigureColor.White
                 ? WhiteFigures
                 : BlackFigures;
@@ -157,8 +163,8 @@ namespace Gameplay
             oneSideFigures
                 .Where(figure =>
                 {
-                    return !figure.WasBeaten 
-                           && figure.Type == FigureType.Pawn 
+                    return !figure.WasBeaten
+                           && figure.Type == FigureType.Pawn
                            && (figure != lastMove.Figure || history.FindAll(item => item.Figure == figure).Count > 1);
                 })
                 .ToList()
@@ -175,6 +181,20 @@ namespace Gameplay
             {
                 GameState = GameState.Play;
             }
+        }
+
+        private void RestartGame()
+        {
+            FiguresPosition = new Figure[8, 8];
+            WhiteFigures.ForEach(figure => UnityEngine.Object.Destroy(figure.gameObject));
+            WhiteFigures = new List<Figure>(16);
+            BlackFigures.ForEach(figure => UnityEngine.Object.Destroy(figure.gameObject));
+            BlackFigures = new List<Figure>(16);
+            WhiteKing = null;
+            BlackKing = null;
+            BoardState = BoardState.None;
+            GameState = GameState.Play;
+            _eventDeliveryService.BoardRestart();
         }
     }
 }

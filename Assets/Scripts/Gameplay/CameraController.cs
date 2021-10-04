@@ -31,14 +31,14 @@ namespace Gameplay
             get => _whitePlayerCameraPoint;
             set => _whitePlayerCameraPoint = value % _whitePlayerPoints.Length;
         }
-        private int _whitePlayerCameraPoint = 0;
+        private int _whitePlayerCameraPoint = 1;
 
         private int BlackPlayerCameraPoint
         {
             get => _blackPlayerCameraPoint;
             set => _blackPlayerCameraPoint = value % _blackPlayerPoints.Length;
         }
-        private int _blackPlayerCameraPoint = 0;
+        private int _blackPlayerCameraPoint = 1;
         private EventDeliveryService _eventDeliveryService;
         private BoardService _boardService;
 
@@ -49,12 +49,12 @@ namespace Gameplay
             _boardService = boardService;
             _eventDeliveryService.OnSwitchPlayerSide += SwitchPlayerCamera;
             _eventDeliveryService.OnUIGameStart += SetCameraGamePosition;
+            _eventDeliveryService.OnUIRetryGame += SetCameraGamePosition;
             _eventDeliveryService.OnUICameraButtonClicked += NextPointCamera;
         }
 
         public void Awake()
         {
-            
             transform.position = _menuPoint.position;
             transform.eulerAngles = _menuPoint.rotation;
         }
@@ -106,6 +106,15 @@ namespace Gameplay
 
         private void SetCameraGamePosition(GameMode mode)
         {
+            _whitePlayerCameraPoint = 1;
+            _blackPlayerCameraPoint = 1;
+            StartCoroutine(ChangeCameraPointCoroutine(_whitePlayerPoints[WhitePlayerCameraPoint]));
+        }
+
+        private void SetCameraGamePosition()
+        {
+            _whitePlayerCameraPoint = 1;
+            _blackPlayerCameraPoint = 1;
             StartCoroutine(ChangeCameraPointCoroutine(_whitePlayerPoints[WhitePlayerCameraPoint]));
         }
     }

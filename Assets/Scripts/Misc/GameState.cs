@@ -4,6 +4,7 @@
     {
         MainMenu,
         Pause,
-        Play
+        Play,
+        End
     }
 }

@@ -18,9 +18,10 @@ namespace UI
 
         [SerializeField]
         private UIDocument mainMenu;
-
         [SerializeField]
         private UIDocument gameUI;
+        [SerializeField]
+        private UIDocument endGameMenu;
 
         private VisualElement _firstScreen;
         private VisualElement _playScreen;
@@ -34,6 +35,10 @@ namespace UI
         private Button _quitButton;
 
         private Button _changeCameraButton;
+
+        private Button _retryButton;
+        private Button _mainMenuButton;
+        
         private EventDeliveryService _eventDeliveryService;
 
         [Inject]
@@ -89,6 +94,19 @@ namespace UI
         private void ShowCheckmateText()
         {
             popupCheckmateText.SetActive(true);
+            StartCoroutine(ShowCheckmateMenu());
+        }
+
+        private IEnumerator ShowCheckmateMenu()
+        {
+            yield return new WaitForSeconds(0.3f);
+            gameUI.gameObject.SetActive(false);
+            endGameMenu.gameObject.SetActive(true);
+            _retryButton = endGameMenu.rootVisualElement.Q<Button>("endgame-menu__retry-button");
+            _mainMenuButton = endGameMenu.rootVisualElement.Q<Button>("endgame-menu__main-menu-button");
+
+            _retryButton.clicked += RetryGame;
+            _mainMenuButton.clicked += () => Debug.Log("MAIN MENU");
         }
 
         private void SwitchMenu(EventBase ev)
@@ -124,6 +142,14 @@ namespace UI
                 _eventDeliveryService.UIGameStart(GameMode.PlayerVsPlayer);
         }
 
+        private void RetryGame()
+        {
+            endGameMenu.gameObject.SetActive(false);
+            gameUI.gameObject.SetActive(true);
+            popupCheckmateText.SetActive(false);
+            _eventDeliveryService.UIRetryGame();
+        }
+        
         private void SetCameraButtonState(bool state)
         {
             _changeCameraButton.SetEnabled(state);

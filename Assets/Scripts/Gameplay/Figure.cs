@@ -89,6 +89,7 @@ namespace Gameplay
         private bool CanChooseOrHoverFigure()
         {
             return _boardService.GameState == GameState.Play
+                   && _boardService.BoardState != BoardState.Checkmate
                    && this != _boardService.ActiveFigure 
                    && !_boardService.IsFigureMoving 
                    && Color == _boardService.ActivePlayer 
